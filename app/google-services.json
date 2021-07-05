@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "863697265770",
+    "project_id": "chatapp-17547",
+    "storage_bucket": "chatapp-17547.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:863697265770:android:7eae05455a8ba1be311613",
+        "android_client_info": {
+          "package_name": "com.tea.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "863697265770-cuc5mhpgqkncn74ae3ulg1hspvj5to42.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcpD_uOfl0K9ckeF4dmtnfzEsSNO7ZsvQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "863697265770-cuc5mhpgqkncn74ae3ulg1hspvj5to42.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
