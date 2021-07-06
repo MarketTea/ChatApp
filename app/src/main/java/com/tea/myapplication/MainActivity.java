@@ -6,9 +6,11 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -122,7 +124,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showRegisterLayout() {
-
+        startActivity(new Intent(MainActivity.this, RegisterActivity.class));
+        finish();
     }
 
     private void showLoginLayout() {
@@ -138,5 +141,18 @@ public class MainActivity extends AppCompatActivity {
         startActivity(new Intent(MainActivity.this, HomeActivity.class));
         finish();
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOGIN_REQUEST_CODE) {
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+            if (resultCode == RESULT_OK) {
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            } else {
+                Toast.makeText(this, "[ERROR]" + response.getError(), Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
