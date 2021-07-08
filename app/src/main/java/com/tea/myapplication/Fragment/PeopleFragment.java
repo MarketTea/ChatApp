@@ -3,6 +3,7 @@ package com.tea.myapplication.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.tea.myapplication.ChatActivity;
 import com.tea.myapplication.Common.Common;
 import com.tea.myapplication.Model.UserModel;
 import com.tea.myapplication.R;
@@ -96,7 +98,9 @@ public class PeopleFragment extends Fragment {
 
                     // Events
                     holder.itemView.setOnClickListener(v -> {
-
+                        Common.chatUser = model;
+                        Common.chatUser.setUid(adapter.getRef(position).getKey());
+                        startActivity(new Intent(getContext(), ChatActivity.class));
                     });
 
                 } else {
