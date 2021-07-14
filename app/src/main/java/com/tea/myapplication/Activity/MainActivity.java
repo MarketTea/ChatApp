@@ -1,4 +1,4 @@
-package com.tea.myapplication;
+package com.tea.myapplication.Activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -25,6 +25,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.tea.myapplication.Common.Common;
 import com.tea.myapplication.Model.UserModel;
+import com.tea.myapplication.R;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.tea.myapplication;
+package com.tea.myapplication.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.format.DateUtils;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,10 +21,6 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,14 +33,18 @@ import com.tea.myapplication.Listener.IFirebaseLoadFailed;
 import com.tea.myapplication.Listener.ILoadTimeFromFirebaseListener;
 import com.tea.myapplication.Model.ChatInfoModel;
 import com.tea.myapplication.Model.ChatMessageModel;
+import com.tea.myapplication.R;
 import com.tea.myapplication.ViewHolders.ChatTextHolder;
+import com.tea.myapplication.ViewHolders.ChatTextReceiveHolder;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFirebaseListener, IFirebaseLoadFailed {
 
@@ -79,6 +82,45 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
 
     LinearLayoutManager layoutManager;
 
+    @OnClick(R.id.img_send)
+    void onSubmitChatClick() {
+        offsetRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                long offset = snapshot.getValue(Long.class);
+                long estimatedServerTimeInMs = System.currentTimeMillis() + offset;
+
+                listener.onLoadOnlyTimeSuccess(estimatedServerTimeInMs);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                errorListener.onError(error.getMessage());
+            }
+        });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (adapter != null)
+            adapter.startListening();
+    }
+
+    @Override
+    protected void onStop() {
+        if (adapter != null)
+            adapter.stopListening();
+        super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adapter != null)
+            adapter.startListening();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,13 +144,33 @@ public class ChatActivity extends AppCompatActivity implements ILoadTimeFromFire
 
             @Override
             protected void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position, @NonNull ChatMessageModel model) {
+                if (holder instanceof ChatTextHolder) {
+                    ChatTextHolder chatTextHolder = (ChatTextHolder) holder;
+                    chatTextHolder.tv_chat_message.setText(model.getContent());
+                    chatTextHolder.tv_time.setText(
+                            DateUtils.getRelativeTimeSpanString(model.getTimestamp(),
+                                    Calendar.getInstance().getTimeInMillis(), 0).toString());
+                } else if (holder instanceof ChatTextReceiveHolder) {
+                    ChatTextReceiveHolder chatTextReceiveHolder = (ChatTextReceiveHolder) holder;
+                    chatTextReceiveHolder.tv_chat_message.setText(model.getContent());
+                    chatTextReceiveHolder.tv_time.setText(
+                            DateUtils.getRelativeTimeSpanString(model.getTimestamp(),
+                                    Calendar.getInstance().getTimeInMillis(), 0).toString());
+                }
 
             }
 
             @NonNull
             @Override
             public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                return null;
+                View view;
+                if (viewType == 0) { // text messages of user *own messages*
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_message_text_own, parent, false);
+                    return new ChatTextReceiveHolder(view);
+                } else //if (viewType == 2) { // text messages of friend
+                    view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_message_text_friend, parent, false);
+                return new ChatTextHolder(view);
+                //}
             }
         };
 

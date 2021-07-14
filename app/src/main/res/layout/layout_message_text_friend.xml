@@ -9,13 +9,12 @@
     <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        app:cardBackgroundColor="@color/colorAccent"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="4dp">
+        android:layout_gravity="end"
+        android:elevation="4dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="8dp">
 
         <LinearLayout
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -27,12 +26,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:text="Show me the meaning"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="16sp" />
 
         </LinearLayout>
-
-
     </androidx.cardview.widget.CardView>
 
     <TextView

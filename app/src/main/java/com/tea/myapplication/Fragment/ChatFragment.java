@@ -1,19 +1,17 @@
 package com.tea.myapplication.Fragment;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
@@ -24,10 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.tea.myapplication.Common.Common;
 import com.tea.myapplication.Model.ChatInfoModel;
-import com.tea.myapplication.Model.UserModel;
 import com.tea.myapplication.R;
 import com.tea.myapplication.ViewHolders.ChatInfoHolder;
-import com.tea.myapplication.ViewHolders.UserViewHolder;
 
 import java.text.SimpleDateFormat;
 
@@ -67,7 +63,8 @@ public class ChatFragment extends Fragment {
     private void loadChatList() {
         Query query = FirebaseDatabase.getInstance()
                 .getReference()
-                .child(Common.CHAT_LIST_REFERENCE);
+                .child(Common.CHAT_LIST_REFERENCE)
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         FirebaseRecyclerOptions<ChatInfoModel> options = new FirebaseRecyclerOptions
                 .Builder<ChatInfoModel>()
                 .setQuery(query, ChatInfoModel.class)
@@ -115,6 +112,9 @@ public class ChatFragment extends Fragment {
                 }
             }
         };
+
+        adapter.startListening();
+        recycler_chat.setAdapter(adapter);
     }
 
     private void initView(View itemView) {

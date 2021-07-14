@@ -1,10 +1,9 @@
-package com.tea.myapplication;
+package com.tea.myapplication.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
@@ -12,6 +11,7 @@ import android.os.Bundle;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.tea.myapplication.Adapter.MyViewPagerAdapter;
+import com.tea.myapplication.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

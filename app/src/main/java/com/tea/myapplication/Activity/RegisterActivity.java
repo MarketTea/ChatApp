@@ -1,4 +1,4 @@
-package com.tea.myapplication;
+package com.tea.myapplication.Activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.tea.myapplication.Common.Common;
 import com.tea.myapplication.Model.UserModel;
+import com.tea.myapplication.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
