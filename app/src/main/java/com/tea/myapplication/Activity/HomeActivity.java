@@ -7,9 +7,12 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.viewpager2.widget.ViewPager2;
 
 import android.os.Bundle;
+import android.util.Log;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.tea.myapplication.Adapter.MyViewPagerAdapter;
 import com.tea.myapplication.R;
 
@@ -30,6 +33,12 @@ public class HomeActivity extends AppCompatActivity {
 
         init();
         setUpViewPager();
+
+        // Get token
+        FirebaseMessaging.getInstance().getToken()
+                .addOnSuccessListener(s -> {
+                    Log.d("TOKEN", s);
+                });
     }
 
     private void setUpViewPager() {

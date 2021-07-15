@@ -1,9 +1,12 @@
 package com.tea.myapplication.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,11 +20,18 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.tea.myapplication.Activity.ChatActivity;
 import com.tea.myapplication.Common.Common;
 import com.tea.myapplication.Model.ChatInfoModel;
+import com.tea.myapplication.Model.UserModel;
 import com.tea.myapplication.R;
 import com.tea.myapplication.ViewHolders.ChatInfoHolder;
 
@@ -102,6 +112,36 @@ public class ChatFragment extends Fragment {
 
                     // Events
                     holder.itemView.setOnClickListener(v -> {
+                        // Go to chat details
+                        FirebaseDatabase.getInstance().getReference(Common.USER_REFERENCE)
+                                .child(FirebaseAuth.getInstance().getCurrentUser().getUid()
+                                        .equals(model.getCreateId()) ? model.getFriendId() : model.getCreateId())
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()) {
+                                            UserModel userModel = snapshot.getValue(UserModel.class);
+                                            Common.chatUser = userModel;
+                                            Common.chatUser.setUid(snapshot.getKey());
+
+                                            String roomId = Common.generateChatRoomId(FirebaseAuth.getInstance().getCurrentUser().getUid(), Common.chatUser.getUid());
+                                            Common.roomSelected = roomId;
+
+                                            Log.d("ROOM_ID", "ROOM is: " + roomId);
+
+                                            // Register topics
+                                            FirebaseMessaging.getInstance().subscribeToTopic(roomId)
+                                                    .addOnSuccessListener(aVoid -> {
+                                                        startActivity(new Intent(getContext(), ChatActivity.class));
+                                                    });
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
 
                     });
 

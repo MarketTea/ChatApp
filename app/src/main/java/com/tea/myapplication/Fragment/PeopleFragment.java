@@ -2,6 +2,7 @@ package com.tea.myapplication.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.tea.myapplication.Activity.ChatActivity;
 import com.tea.myapplication.Common.Common;
 import com.tea.myapplication.Model.UserModel;
@@ -97,7 +99,17 @@ public class PeopleFragment extends Fragment {
                     holder.itemView.setOnClickListener(v -> {
                         Common.chatUser = model;
                         Common.chatUser.setUid(adapter.getRef(position).getKey());
-                        startActivity(new Intent(getContext(), ChatActivity.class));
+
+                        String roomId = Common.generateChatRoomId(FirebaseAuth.getInstance().getCurrentUser().getUid(), Common.chatUser.getUid());
+                        Common.roomSelected = roomId;
+
+                        Log.d("ROOM_ID", "ROOM is: " + roomId);
+
+                        // Register topics
+                        FirebaseMessaging.getInstance().subscribeToTopic(roomId)
+                                .addOnSuccessListener(aVoid -> {
+                                    startActivity(new Intent(getContext(), ChatActivity.class));
+                                });
                     });
 
                 } else {
